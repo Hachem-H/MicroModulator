@@ -6,15 +6,26 @@ import MuseScore 3.0
 MuseScore 
 {
 	id: microModulator
-    version:  "1.0"
+    version: "1.0"
     description: qsTr("A MuseScore plugin which enables microtones")
+
+    property var tuning: [
+           0,   0,   0,    0, 
+           0,   0,   0,    0,    
+           0,   0,   0,  -50, 
+        -150,  50, -50,  150, 
+          50, 250, 150, -150,
+        -250, -50,  50,  -50,
+    ]
 
     function listProperty(item)
     {
         for (var prop in item)
             if(typeof item[prop] != "function")
                 if(prop != "objectName")
+                {
                     console.log(prop + ":" + item[prop])
+                }
     }
 
     function tune(element) 
@@ -23,10 +34,13 @@ MuseScore
         for (let i = 0; i < notes.length; i++)
         {
             let note = notes[i]
+            let accidental = note.accidentalType.valueOf()
 
-            console.log(" ===== NEW NOTE ===== ");
-            console.log("Accidental Type: " + note.accidentalType)
-            console.log("Pitch: " + note.pitch)
+            if (accidental <= tuning.length)
+            {
+                note.tuning = tuning[accidental]
+                console.log(note.tuning)
+            }
         }
     }
 
@@ -90,7 +104,6 @@ MuseScore
 	
     onRun: 
     {
-        console.log("Hello World!")
         applyEffect(tune)
     }
 }
